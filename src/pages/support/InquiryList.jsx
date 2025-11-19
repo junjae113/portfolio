@@ -7,7 +7,7 @@ import RadioWithLabel from '../../components/radio/RadioWithLabel';
 import BasicInput from '../../components/input/BasicInput';
 import ButtonWithInput from '../../components/input/ButtonWithInput';
 import { Link, useNavigate } from 'react-router-dom';
-import List from './component/List';
+import List from './list/List';
 
 const InquiryList = () => {
 

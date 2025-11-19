@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTurnUp, faPaperclip, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import TextArea from '../../components/textArea/TextArea';
 import BasicButton from '../../components/button/BasicButton';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const InquiryDetail = ({isUpdate, setIsUpdate}) => {
     const {id} = useParams();
@@ -31,32 +31,33 @@ const InquiryDetail = ({isUpdate, setIsUpdate}) => {
         .then(response => response.json())
         .then(data => {
             setInquiryTitle(data.user.title);
-              setInquiryContent(data.user.content);
-              const date = data.user.created_at.slice(0,10).split("-").join(".");
-              setInquiryDate(date)
-              setInquiryName(data.user.user_name)
-              setFile(data.user.file)
-              setUserId(data.user.user_id)
+            setInquiryContent(data.user.content);
+            const date = data.user.created_at.slice(0,10).split("-").join(".");
+            setInquiryDate(date)
+            setInquiryName(data.user.user_name)
+            if(data.user.file != "") {
+                setFile(data.user.file);
+            } else {
+                setFile(null);
+            }
+            setUserId(data.user.user_id)
           })
         .catch(error => console.error("문의글 불러오는 중 오류" + error))
     }, [])
 
-    const fileButton = () => {
-        if (file != ""){
-            return (
-                <S.FileLinkWrapper>
-                     <FontAwesomeIcon icon={faPaperclip} size='sm' />
-                     &nbsp;
-                     첨부파일.jpg
-                </S.FileLinkWrapper>
-            )
-        } else {
-            return (
-                <S.FileLinkWrapper></S.FileLinkWrapper>
-            )
-        }
-    }
+    const token = localStorage.getItem("jwt_token");
 
+    const base64Payload = token.split(".")[1];
+    const payload = JSON.parse(atob(base64Payload));
+    const user_id = payload.user_id;
+
+    // if (userId != user_id) {
+    //     window.alert("본인 문의글만 조회할 수 있습니다")
+    //     window.open("/support/inquiry-list")
+    // }
+
+    const fileImage = file ? <S.FileImage src={file} alt='첨부파일'/> : <p></p>;
+    
     // 프로필 사진 조회
 
     useEffect(() => {
@@ -74,7 +75,8 @@ const InquiryDetail = ({isUpdate, setIsUpdate}) => {
     
     // 답변 조회
 
-    const [reply, setReply] = useState([])
+    const [reply, setReply] = useState([])``
+
     useEffect(() => {
       fetch(`${process.env.REACT_APP_BACKEND_URL}/inquiry/api/get-inquiry-reply/${id}`)
       .then(response => response.json())
@@ -82,11 +84,12 @@ const InquiryDetail = ({isUpdate, setIsUpdate}) => {
       .catch(error => console.error("문의글 답변 불러오는 중 오류" + error))
     }, [])
 
+
     const inquiryReply = reply.map((data) => {
         const content = data.reply_content;
         const name = data.user_name;
         const date = data.created_at.slice(0, 10).split("-").join(".");
-        // const profile = {profile}
+        // const profile = data.user.dogProfile.profileImage
 
         return (
         <S.InquiryReplyWapper>
@@ -94,13 +97,7 @@ const InquiryDetail = ({isUpdate, setIsUpdate}) => {
                 <S.ReplyProfileDateWrapper> 
                     <S.ReplyProfileWrapper>
                      <FontAwesomeIcon icon={faArrowTurnUp} rotation={90} size='2xl' />
-                        {/* <S.Profile
-                          src={profile}
-                          alt="프로필"
-                          onError={(e) => {
-                            e.target.src = "/assets/img/sample-profile.png";
-                          }}
-                        /> */}
+                     {/* <S.Profile src={profile} alt='답변 프로필' /> */}
                      <S.AuthorName>{name}</S.AuthorName>
                     </S.ReplyProfileWrapper>
                     <S.DateWrapper>
@@ -116,6 +113,7 @@ const InquiryDetail = ({isUpdate, setIsUpdate}) => {
     })
 
     // 답변 등록
+
     const onClickReplyPost = async (e) => {
         const raw = localStorage.getItem("jwt_token")
 
@@ -152,18 +150,17 @@ const InquiryDetail = ({isUpdate, setIsUpdate}) => {
         }
      }
 
+     const onClickToList = () => {
+        if (content) {
+            if (window.confirm("답변 내용이 저장되지 않습니다. 나가시겠습니까?")) {
+                window.open("/support/inquiry-list", "_self")
+            }
+        }
+     }
+
  return (
   <S.InquiryWrapper>
    <SupportMenuComponent activeMenu="inquiry" />
-   {/* <div>
-    <S.InquiryTitle>1:1 문의</S.InquiryTitle>
-    <div>
-        <S.InquiryTitleBottom>
-            문의사항을 보내주시면 친절하게 답변하겠습니다. <br />
-            1:1문의를 주말에 남겨 주시는 고객님께는 평일 9:00 ~ 18:00 에 순차적으로 답변 드리도록 하겠습니다.
-        </S.InquiryTitleBottom>
-    </div>
-   </div> */}
    <S.InquiryBodyWrapper>
     <S.ListWrapper>
         <S.InquiryContentWrapper>
@@ -188,7 +185,7 @@ const InquiryDetail = ({isUpdate, setIsUpdate}) => {
             <S.InquiryContent>
                 {inquiryContent}
             </S.InquiryContent>
-            {fileButton}
+            {fileImage}
         </S.InquiryContentWrapper>
         {inquiryReply}
         <S.TextAreaWrapper>
@@ -198,9 +195,9 @@ const InquiryDetail = ({isUpdate, setIsUpdate}) => {
             </S.Replybutton>
         </S.TextAreaWrapper>
         <S.ButtonToList>
-         <Link to={"/support/inquiry-list"} >
-          <BasicButton children={"목록"} variant={"default"} basicButton={"medium"} />
-         </Link>
+         {/* <Link to={"/support/inquiry-list"} > */}
+          <BasicButton children={"목록"} variant={"default"} basicButton={"medium"} onClick={onClickToList} />
+         {/* </Link> */}
         </S.ButtonToList>
     </S.ListWrapper>
    </S.InquiryBodyWrapper>

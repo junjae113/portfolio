@@ -1,13 +1,16 @@
 import S from './style';
 
 import Friends from './mypageComponent/friends/Friends';
-
-// 프로필
-// 친구 목록
-// 캘린더
-// 채팅
+import ChatList from '../chat/ChatList';
+import { useState } from 'react';
 
 const MyPage = () => {
+  const [selectedChat, setSelectedChat] = useState(null); // 선택한 채팅방
+
+  const handleSelectChat = (chat) => {
+    setSelectedChat(chat);
+  };
+
     return (
         <S.Wrapper>
             <S.FirstWrapper>

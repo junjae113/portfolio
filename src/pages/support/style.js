@@ -360,6 +360,11 @@ S.FileLinkWrapper = styled.div`
  font-size: ${({ theme }) => theme.FONT_SIZE.button2 };
 `
 
+S.FileImage = styled.img`
+  width: 1040px;
+  margin: 32px 0 0 120px;
+`
+
 S. InquiryReplyWapper = styled.div`
  display: flex;
  flex-direction: column;

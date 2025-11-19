@@ -22,6 +22,7 @@ import Main from "../pages/main/Main";
 import Matching from "../pages/matching/Matching";
 import InquiryList from "../pages/support/InquiryList";
 import InquiryDetail from "../pages/support/InquiryDetail";
+import ProtectedRoute from "../components/protectedRoute/ProtectedRout";
 
 const router = createBrowserRouter([
   {
@@ -67,7 +68,7 @@ const router = createBrowserRouter([
         ],
       },
       // 마이페이지
-      { path: "my-page", element: <MyPage /> },
+      { path: "my-page", element: <ProtectedRoute><MyPage /></ProtectedRoute> },
       // 친구들 보러가기
       { path: "friends", element: <Matching /> },
       // DBTI
@@ -80,9 +81,9 @@ const router = createBrowserRouter([
         path: "support",
         children: [
           { path: "faq", element: <Faq /> },
-          { path: "customer-inquiry", element: <Inquiry /> },
-          { path: "inquiry-list", element: <InquiryList />},
-          { path: "inquiry-detail/:id", element: <InquiryDetail />},
+          { path: "customer-inquiry", element: <ProtectedRoute><Inquiry /></ProtectedRoute> },
+          { path: "inquiry-list", element: <ProtectedRoute><InquiryList /></ProtectedRoute> },
+          { path: "inquiry-detail/:id", element: <ProtectedRoute><InquiryDetail /></ProtectedRoute> },
         ],
       },
     ],

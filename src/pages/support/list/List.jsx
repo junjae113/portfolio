@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import S from "./style";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import RadioWithLabel from "../../../components/radio/RadioWithLabel";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 
@@ -74,9 +75,9 @@ const List = () => {
 
 
  const linkToDetail = (e) => {
-   if(e.user_id == user_id) {
+   if(e.user_id === user_id) {
      link(`/support/inquiry-detail/${e.inquiry_id}`)
-    } else if (user_id == "junjae114") {
+    } else if (user_id === "junjae113") {
      link(`/support/inquiry-detail/${e.inquiry_id}`)
    } else {
      window.alert("본인 문의글만 조회할 수 있습니다")
@@ -100,7 +101,7 @@ const List = () => {
   }
 
   const inquiryList = currentItems.map((data) => setList(data))
-  const filteredInquiryList = data.filter((data) => data.user_id == user_id).map((data) => setList(data)) // 라디오 체크 시 페이지 나눔 X
+  const filteredInquiryList = data.filter((data) => data.user_id === user_id).map((data) => setList(data)) // 라디오 체크 시 페이지 나눔 X
 
   const finalList = isChecked ? filteredInquiryList : inquiryList
 

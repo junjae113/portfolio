@@ -5,10 +5,10 @@ import BasicInput from '../../components/input/BasicInput';
 import BasicButton from '../../components/button/BasicButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStarOfLife } from '@fortawesome/free-solid-svg-icons';
-import FileUpload from '../../components/fileUpload/FileUpload';
+import FileUpload from './fileUpload/FileUpload';
 import TextArea from '../../components/textArea/TextArea';
 import RadioWithLabel from '../../components/radio/RadioWithLabel';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Inquiry = ({isUpdate, setIsUpdate}) => {
   
@@ -38,6 +38,7 @@ const Inquiry = ({isUpdate, setIsUpdate}) => {
   const [file, setFile] = useState("")
   const onChangeFile = (e) => {
     setFile(e.target.value)
+    console.log(e.target.value)
   }
 
   const link = useNavigate("")
@@ -92,9 +93,7 @@ const Inquiry = ({isUpdate, setIsUpdate}) => {
         if (window.confirm('변경내용이 저장되지 않았습니다. 나가시겠습니까?')) {
           window.open("/support/inquiry-list", "_self")
         }
-      } else {
-        link("/support/inquiry-list")
-      }
+      } 
     }
 
 
@@ -146,7 +145,7 @@ const Inquiry = ({isUpdate, setIsUpdate}) => {
                      </S.CharWrapper>
                     </S.InputsWrapper>
                </S.InquiryQuestionBodyWrapper>
-               <S.InquiryFileWrapper>
+               {/* <S.InquiryFileWrapper>
                    <S.InquiryCategory>파일첨부</S.InquiryCategory>
                        <S.FileWrapper>
                         <S.FileInputButton>
@@ -155,7 +154,7 @@ const Inquiry = ({isUpdate, setIsUpdate}) => {
                             <p>*파일은 1 개만 등록이 가능하며, 용량은 총 50MB 이하로 첨부하여 주시기 바랍니다. <br/>
                              첨부 가능한 파일 확장자 : jpg,jpeg,gif,png,zip,doc,ppt,pptx,xls,xlsx,pdf,hwp</p>
                        </S.FileWrapper>
-               </S.InquiryFileWrapper>
+               </S.InquiryFileWrapper> */}
             </S.InquiryBodyWrapper>
                 <S.InquiryButtonWrapper>
                     <BasicButton children={"취소"} variant={"gray"} basicButton={"medium"} onClick={onClickCancel}/>

@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { spacingProps } from "../../styles/spacingProps";
+import { spacingProps } from "../../../styles/spacingProps";
 
 const S = {}
 

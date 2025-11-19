@@ -4,12 +4,13 @@ import S from './style';
 
 
 
-const FileUploade = () => {
+const FileUploade = ({onChange}) => {
   const fileInputRef = useRef();
   const [fileName, setFileName] = useState('');
   const [dragOver, setDragOver] = useState(false);
 
   const handleFileChange = (e) => {
+    onChange(e)
     const file = e.target.files?.[0];
     if (file) {
       setFileName(file.name);
