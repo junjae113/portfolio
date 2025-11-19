@@ -10,7 +10,7 @@ S.HeaderWrapper = styled.header`
   background: #fff5ec;
   padding: 20px 240px;
   position: fixed;
-  min-height: 100px;
+  height: 100px;
   top: 0;
   width: 100%;
   z-index: 999;

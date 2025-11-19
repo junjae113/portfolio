@@ -31,11 +31,18 @@ S.Author = styled.div`
  font-size: ${({ theme }) => theme.FONT_SIZE.body2 };
 `
 
+<<<<<<< HEAD
+S.Title = styled.div`
+ display: flex;
+ align-items: center;
+ width: 720px;
+=======
 S.Title = styled.button`
  display: flex;
  align-items: center;
  width: 720px;
  background-color: white;
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
  font-size: ${({ theme }) => theme.FONT_SIZE.body2 };
 `
 
@@ -55,7 +62,11 @@ S.Reply = styled.div`
  font-size: ${({ theme }) => theme.FONT_SIZE.body3 };
 `
 
+<<<<<<< HEAD
+S.PaginattionWrapper = styled.div`
+=======
 S.PaginationWrapper = styled.div`
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
  display: flex;
  justify-content: center;
  align-items: end;
@@ -70,6 +81,8 @@ S.PaginationWrapper = styled.div`
  }
 `
 
+<<<<<<< HEAD
+=======
 S.RadioInputWrapper = styled.div`
  display: flex;
  flex-direction: row;
@@ -98,4 +111,5 @@ S.SerachInput = styled.div`
  }
 `
 
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
 export default S;

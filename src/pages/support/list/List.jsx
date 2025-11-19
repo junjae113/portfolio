@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import S from "./style";
-import { useNavigate } from "react-router-dom";
-import RadioWithLabel from "../../../components/radio/RadioWithLabel";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-
+import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ITEMS_PER_PAGE = 10;
 

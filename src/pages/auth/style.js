@@ -350,17 +350,22 @@ S.EmailWrapper = styled.div`
     min-width: 0;
   }
 
-  > *:nth-child(2) { /* @ 기호 */
+  span {
     flex: 0 0 auto;
     min-width: auto;
   }
 
-  > *:nth-child(3) { /* 셀렉트박스 */
+  > *:nth-child(2) { /
+    flex: 0 0 auto;
+    min-width: auto;
+  }
+
+  > *:nth-child(3) { 
     flex: 1;
     min-width: 0;
   }
 
-  > *:nth-child(4) { /* 직접입력 필드 */
+  > *:nth-child(4) { 
     flex: 1;
     min-width: 0;
   }

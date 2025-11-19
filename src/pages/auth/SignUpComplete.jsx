@@ -23,7 +23,11 @@ const SignUpComplete = () => {
                 </S.CompleteIcon>
 
                 <S.CompleteTitle> 
-                    <Text.Body1>{userName}님의 회원가입이 완료되었습니다!</Text.Body1>
+                    <Text.Body1>
+                        <span style={{ fontWeight: 'bold', fontSize: '36px' }}>
+                            {userName}
+                        </span>님의 회원가입이 완료되었습니다!
+                    </Text.Body1>
                 </S.CompleteTitle>
 
             <S.CompleteButtonWrapper>

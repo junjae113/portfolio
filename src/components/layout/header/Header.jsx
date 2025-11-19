@@ -33,6 +33,15 @@ const Header = ({ isLoggedIn, user }) => {
     navigate('/sign-up');
   };
 
+  // 친구들 보러가기 클릭 핸들러 (로그인 확인)
+  const handleFriendsClick = (e) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      alert('로그인 후 이용해주세요.');
+      navigate('/sign-in');
+    }
+  };
+
   // 프로필 이미지 경로 결정 함수
   const getProfileImageSrc = () => {
     console.log('=== Header 프로필 이미지 확인 ===');
@@ -93,7 +102,7 @@ const Header = ({ isLoggedIn, user }) => {
           </>
         ) : (
           <>
-            <S.MenuLink to="/friends">
+            <S.MenuLink to="/friends" onClick={handleFriendsClick}>
               <Text.Body3>친구들 보러가기</Text.Body3>
             </S.MenuLink>
             <S.MenuLink to="/support/faq">

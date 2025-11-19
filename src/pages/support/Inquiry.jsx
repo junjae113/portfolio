@@ -8,7 +8,7 @@ import { faStarOfLife } from '@fortawesome/free-solid-svg-icons';
 import FileUpload from './fileUpload/FileUpload';
 import TextArea from '../../components/textArea/TextArea';
 import RadioWithLabel from '../../components/radio/RadioWithLabel';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Inquiry = ({isUpdate, setIsUpdate}) => {
   
@@ -93,7 +93,9 @@ const Inquiry = ({isUpdate, setIsUpdate}) => {
         if (window.confirm('변경내용이 저장되지 않았습니다. 나가시겠습니까?')) {
           window.open("/support/inquiry-list", "_self")
         }
-      } 
+      } else {
+        link("/support/inquiry-list")
+      }
     }
 
 

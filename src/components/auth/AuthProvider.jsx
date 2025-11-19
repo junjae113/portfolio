@@ -9,14 +9,15 @@ const AuthProvider = ({ children }) => {
   // 회원가입 관련 경로인지 확인 (완료 페이지 제외)
   const isSignUpPage = (window.location.pathname.startsWith('/sign-up') && 
                         !window.location.pathname.includes('/complete')) || 
-                      window.location.pathname.startsWith('/profile/add') ||
                       window.location.pathname === '/sign-in';
 
   // 토큰 유효성 검사
   useEffect(() => {
+    console.log('=== AuthProvider useEffect 실행 ===');
     const token = localStorage.getItem('jwt_token');
     const userName = localStorage.getItem('userName');
     const user_id = localStorage.getItem('user_id');
+    console.log('localStorage 값들:', { token: !!token, userName, user_id });
     
     // 회원가입 페이지라면 로그인 상태 해제
     if (isSignUpPage) {
@@ -42,9 +43,38 @@ const AuthProvider = ({ children }) => {
           if (response.ok) {
             const { message, user } = await response.json();
             if (user) {
-              dispatch(setUser(user));
-              dispatch(setUserStatus(true));
-              console.log('자동 로그인 성공:', message);
+              // JWT 토큰 검증 후 최신 사용자 정보를 서버에서 다시 가져오기
+              try {
+                const userResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${user_id}`, {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                });
+                
+                if (userResponse.ok) {
+                  const userData = await userResponse.json();
+                  if (userData.success && userData.user) {
+                    console.log('JWT 검증 후 최신 사용자 데이터 로드:', userData.user);
+                    dispatch(setUser(userData.user));
+                    dispatch(setUserStatus(true));
+                    console.log('자동 로그인 성공 (최신 데이터):', message);
+                  } else {
+                    dispatch(setUser(user));
+                    dispatch(setUserStatus(true));
+                    console.log('자동 로그인 성공:', message);
+                  }
+                } else {
+                  dispatch(setUser(user));
+                  dispatch(setUserStatus(true));
+                  console.log('자동 로그인 성공:', message);
+                }
+              } catch (error) {
+                console.error('최신 사용자 정보 조회 오류:', error);
+                dispatch(setUser(user));
+                dispatch(setUserStatus(true));
+                console.log('자동 로그인 성공:', message);
+              }
             }
           } else {
             // 토큰이 유효하지 않으면 제거하고 로그아웃 상태로 변경
@@ -65,17 +95,76 @@ const AuthProvider = ({ children }) => {
       };
 
       isAuthenticate();
-    } else if (userName && user_id) {
-      // JWT 토큰이 없어도 회원가입 완료 상태라면 로그인 상태로 복원
-      console.log('회원가입 완료 상태 감지 - 로그인 상태 복원');
-      dispatch(setUser({
-        user_id: user_id,
-        name: userName,
-        email: localStorage.getItem('email') || null,
-        profileImage: localStorage.getItem('profileImage') || null
-      }));
-      dispatch(setUserStatus(true));
-      setIsLoading(false);
+    } else if (userName) {
+      // JWT 토큰이 없어도 회원가입 완료 상태라면 서버에서 완전한 사용자 정보를 가져와서 로그인 상태로 복원
+      console.log('회원가입 완료 상태 감지 - 서버에서 사용자 정보 조회');
+      const fetchUserData = async () => {
+        try {
+          // user_id가 없으면 userName으로 사용자 찾기 시도
+          const userId = user_id || localStorage.getItem('user_id');
+          if (!userId) {
+            console.log('user_id가 없어서 기본 정보로 설정');
+            dispatch(setUser({
+              name: userName,
+              email: localStorage.getItem('email') || null,
+              profileImage: localStorage.getItem('profileImage') || null
+            }));
+            dispatch(setUserStatus(true));
+            setIsLoading(false);
+            return;
+          }
+          
+          const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${userId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log('서버에서 가져온 사용자 데이터:', data);
+            if (data.success && data.user) {
+              console.log('Redux에 저장할 사용자 데이터:', data.user);
+              dispatch(setUser(data.user));
+              dispatch(setUserStatus(true));
+              console.log('사용자 정보 로드 성공:', data.user);
+            } else {
+              // 서버에서 사용자 정보를 가져올 수 없으면 기본 정보로 설정
+              dispatch(setUser({
+                user_id: user_id,
+                name: userName,
+                email: localStorage.getItem('email') || null,
+                profileImage: localStorage.getItem('profileImage') || null
+              }));
+              dispatch(setUserStatus(true));
+            }
+          } else {
+            // API 호출 실패 시 기본 정보로 설정
+            dispatch(setUser({
+              user_id: user_id,
+              name: userName,
+              email: localStorage.getItem('email') || null,
+              profileImage: localStorage.getItem('profileImage') || null
+            }));
+            dispatch(setUserStatus(true));
+          }
+        } catch (error) {
+          console.error('사용자 정보 조회 오류:', error);
+          // 오류 발생 시 기본 정보로 설정
+          dispatch(setUser({
+            user_id: user_id,
+            name: userName,
+            email: localStorage.getItem('email') || null,
+            profileImage: localStorage.getItem('profileImage') || null
+          }));
+          dispatch(setUserStatus(true));
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchUserData();
     } else {
       // JWT 토큰이 없으면 로그아웃 상태로 변경
       dispatch(setUserStatus(false));

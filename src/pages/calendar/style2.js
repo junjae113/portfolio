@@ -327,6 +327,17 @@ S.FriendAvatar = styled.img`
   border: 5px solid transparent;
   transition: border 0.2s;
 
+<<<<<<< HEAD
+=======
+  &.selected {
+    border: 4px solid ${({ theme }) => theme.PALLETE.secondary.main};
+  }
+
+  &:hover {
+    filter: brightness(0.85);
+  }
+
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
   ${({ $isSelected }) =>
     $isSelected &&
     css`

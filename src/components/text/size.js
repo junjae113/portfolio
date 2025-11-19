@@ -66,6 +66,9 @@ Text.H6 = styled.h6`
   ${spacingProps}
   ${({ fontWeight = "regular", ...props }) =>
     fontWeightCSS[fontWeight]?.(props)}
+    color: ${({ color }) => {
+    return color;
+  }};
 `;
 
 // Body

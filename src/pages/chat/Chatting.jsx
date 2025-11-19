@@ -1,12 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { io } from 'socket.io-client';
 import ChatApp from './ChatApp';
 import ChatList from './ChatList';
 import ScheduleAlert from './ScheduleAlert.jsx';
 import S from './style.js';
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
 
 const Chatting = () => {
   const [selectedChat, setSelectedChat] = useState(null); // 선택한 채팅방
   const [showScheduleAlert, setShowScheduleAlert] = useState(true); // 스케줄alert on/off
+<<<<<<< HEAD
 
   // 전체 chats 리스트
   const [chats, setChats] = useState([
@@ -43,6 +50,20 @@ const Chatting = () => {
 
   ]);
 
+=======
+  const [freshKey, setFreshKey] = useState(0);
+  const user_id = useSelector((state) => state.user.currentUser?.user_id);
+
+  if (!window.socket) {
+    window.socket = io('http://localhost:8000', { withCredentials: true });
+  }
+
+  useEffect(() => {
+    if (!user_id || !window.socket) return;
+    window.socket.emit('register', { userId: user_id });
+  }, [user_id]);
+
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
   // ChatList에서 선택된 채팅방
   const handleSelectChat = (chat) => {
     setSelectedChat(chat);
@@ -60,16 +81,28 @@ const Chatting = () => {
   return (
    <S.ChattingContainer>
       <ChatList
-        chats={chats}
+        // chats={chats}
+        freshKey={freshKey}
         onSelectChat={handleSelectChat}
       />
       <S.ChatAppWrapper className={!showScheduleAlert ? 'full-width' : ''}>
         <ChatApp
           chat={selectedChat}
+          freshKey={freshKey}
+          onBumpFreshKey={() => setFreshKey(k => k + 1)}
           onClose={() => setSelectedChat(null)}
           onToggleScheduleAlert={toggleScheduleAlert}
         />
+<<<<<<< HEAD
         {showScheduleAlert && <ScheduleAlert chat={selectedChat}/>}
+=======
+        {showScheduleAlert && 
+          <ScheduleAlert 
+            chat={selectedChat}
+            freshKey={freshKey}
+          />
+        }
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
       </S.ChatAppWrapper>
 
     </S.ChattingContainer>

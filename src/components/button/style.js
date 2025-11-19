@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import { spacingProps } from "../../styles/spacingProps";
 import { flexCenter } from "../../styles/common";
+import { animations, commonAnimations } from "../../styles/animations";
 
 //케이스에 따른 분류
 const variantCSS = {
@@ -63,14 +64,14 @@ const basicButtonCSS = {
 // 둥근 형태의 버튼
 const roundButtonCSS = {
   superSmall: css`
-    padding: ${({ theme }) => `${theme.SPACING["10"]} ${theme.SPACING["20"]}`};
+    padding: ${({ theme }) => `${theme.SPACING["10"]} ${theme.SPACING["12"]}`};
     border-radius: 52px;
     font-size: ${({ theme }) => theme.FONT_SIZE["button4"]};
     font-weight: ${({ theme }) => theme.FONT_WEIGHT["semiBold"]};
     line-height: 1;
   `,
   small: css`
-    padding: ${({ theme }) => `${theme.SPACING["16"]} ${theme.SPACING["28"]}`};
+    padding: ${({ theme }) => `${theme.SPACING["12"]} ${theme.SPACING["32"]}`};
     border-radius: 52px;
     font-size: ${({ theme }) => theme.FONT_SIZE["button3"]};
     font-weight: ${({ theme }) => theme.FONT_WEIGHT["semiBold"]};
@@ -99,12 +100,29 @@ const Button = styled.button`
   gap: 0 8px;
   ${spacingProps}
   ${flexCenter};
+  
+  // 호버 애니메이션 추가
+  transition: transform 0.2s ease;
+  cursor: pointer;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
 
   // disabled 속성일 때 강제 스타일
   &:disabled {
     background-color: ${({ theme }) => theme.PALLETE.background["gray200"]};
     color: ${({ theme }) => theme.PALLETE.text.disabled["strong"]};
     border: 1px solid ${({ theme }) => theme.PALLETE.background["gray200"]};
+    cursor: not-allowed;
+    
+    &:hover {
+      transform: none;
+    }
   }
 `;
 

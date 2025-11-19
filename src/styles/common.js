@@ -45,7 +45,7 @@ export const container = css`
 
 export const SignUpContainerStyles = css`
   width: 100%;
-  padding: 0 480px;
+  padding: 0 240px;
   margin: 0 auto;
   box-sizing: border-box;
   background-color: ${({ backgroundColor = "#fff" }) => backgroundColor};

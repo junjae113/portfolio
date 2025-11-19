@@ -10,8 +10,10 @@ const SelectBox = ({ options = [], placeholder = "선택하세요", onSelect, de
   useEffect(() => {
     if (defaultValue && options.includes(defaultValue)) {
       setSelected(defaultValue);
+    } else if (defaultValue === '') {
+      setSelected('');
     }
-  }, [defaultValue, options]);
+  }, [defaultValue]);
 
   const handleSelect = (val) => {
     setSelected(val);

@@ -16,11 +16,26 @@ const getSymptomTitle = (id) => {
     switch(id) {
         case 1: return "가려움증";
         case 2: return "피부 발진";
-        case 3: return "소화불량";
-        case 4: return "눈 충혈";
-        case 5: return "귀 염증";
+        case 3: return "눈물 흘림";
+        case 4: return "귀 염증";
+        case 5: return "소화문제";
         default: return "";
     }
+};
+
+// 증상 텍스트를 ID로 변환하는 함수
+const getSymptomId = (title) => {
+    // title이 문자열이 아니면 null 반환
+    if (typeof title !== 'string') {
+        return null;
+    }
+    
+    if (title.includes("가려움증")) return 1;
+    if (title.includes("피부 발진")) return 2;
+    if (title.includes("눈물 흘림")) return 3;
+    if (title.includes("귀 염증")) return 4;
+    if (title.includes("소화문제")) return 5;
+    return null;
 };
 
 const AddHealthProfile = () => {
@@ -28,16 +43,69 @@ const AddHealthProfile = () => {
 
     const calendarRef = useRef(null);
     const [selectedDate, setSelectedDate] = useState(null);
+    
+    const location = useLocation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
+    // 편집 모드 확인 (URL 파라미터)
+    const urlParams = new URLSearchParams(location.search);
+    const isEditMode = urlParams.get('mode') === 'edit';
+    
+    // Redux에서 현재 사용자 정보 가져오기
+    const currentUser = useSelector(state => state.user.currentUser);
+    
+    // currentUser가 없을 때 localStorage에서 정보 가져오기
+    const fallbackUser = currentUser || {
+        user_id: localStorage.getItem('user_id'),
+        name: localStorage.getItem('userName'),
+        healthProfile: {}
+    };
+    
+    // 서버에서 건강정보 가져오기
+    const [serverHealthData, setServerHealthData] = useState(null);
+    
+    useEffect(() => {
+        const fetchHealthData = async () => {
+            if (isEditMode && fallbackUser.user_id) {
+                try {
+                    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${fallbackUser.user_id}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success && data.user?.healthProfile) {
+                            console.log('서버에서 가져온 건강정보:', data.user.healthProfile);
+                            setServerHealthData(data.user.healthProfile);
+                        }
+                    }
+                } catch (error) {
+                    console.error('건강정보 조회 오류:', error);
+                }
+            }
+        };
+        
+        fetchHealthData();
+    }, [isEditMode, fallbackUser.user_id]);
+    
+    // localStorage의 userName을 최우선으로 사용하도록 userData 생성
+    const baseUserData = serverHealthData || fallbackUser?.healthProfile || {};
+    const userData = {
+        ...baseUserData,
+        // 건강정보에는 name이 없으므로 그대로 사용
+    };
+    console.log('AddHealthProfile - currentUser:', currentUser);
+    console.log('AddHealthProfile - fallbackUser:', fallbackUser);
+    console.log('AddHealthProfile - userData:', userData);
+    console.log('AddHealthProfile - isEditMode:', isEditMode);
     const [vaccination, setVaccination] = useState(['DHPP']); 
     const [selectedSymptoms, setSelectedSymptoms] = useState([]); // 빈 배열로 시작 (기본값 없음)
     const [selectedFavorites, setSelectedFavorites] = useState([1]); // 좋아하는 것들 다중선택 (기본값: 1번 선택)
     const [selectedCautions, setSelectedCautions] = useState([1]); // 주의사항 다중선택 (기본값: 1번 선택)
-
-    const location = useLocation();
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const isEditMode = location.state?.mode === 'edit';
-    const userData = location.state?.userData || {};
 
     const [form, setForm] = useState({
         vaccine : isEditMode ? userData.vaccine || ['DHPP'] : ['DHPP'], // 기본값 설정
@@ -55,7 +123,49 @@ const AddHealthProfile = () => {
 
     // 초기값 설정
     useEffect(() => {
-        if (!isEditMode) {
+        if (isEditMode && userData) {
+            // 편집 모드일 때 기존 데이터로 초기화
+            console.log('건강정보 편집 모드 - 기존 데이터:', userData);
+            
+            // 기본 정보
+            setValue('hospital', userData.hospital || '');
+            setValue('visit', userData.visitCycle || '');
+            setValue('allergyCause', userData.allergyCause || '');
+            
+            // 예방접종
+            if (userData.vaccine && userData.vaccine.length > 0) {
+                setVaccination(userData.vaccine);
+                setValue('vaccine', userData.vaccine);
+            }
+            
+            // 알러지 증상
+            if (userData.allergySymptom && Array.isArray(userData.allergySymptom) && userData.allergySymptom.length > 0) {
+                const symptomIds = userData.allergySymptom.map(symptom => {
+                    const id = getSymptomId(symptom);
+                    return id;
+                }).filter(id => id);
+                setSelectedSymptoms(symptomIds);
+                setValue('allergySymptom', symptomIds);
+            }
+            
+            // 마지막 방문일
+            if (userData.lastVisit) {
+                const visitDate = dayjs(userData.lastVisit);
+                setSelectedDate(visitDate);
+                setValue('lastDay', visitDate);
+            }
+            
+            // 폼 상태 업데이트
+            setForm(prev => ({
+                ...prev,
+                hospital: userData.hospital || '',
+                visit: userData.visitCycle || '',
+                allergyCause: userData.allergyCause || '',
+                vaccine: userData.vaccine || [],
+                allergySymptom: userData.allergySymptom || [],
+                lastDay: userData.lastVisit ? dayjs(userData.lastVisit) : null
+            }));
+        } else if (!isEditMode) {
             // 신규 등록 시 기본값 설정
             setForm(prev => ({
                 ...prev,
@@ -68,7 +178,7 @@ const AddHealthProfile = () => {
             setSelectedFavorites([1]);
             setSelectedCautions([1]);
         }
-    }, [isEditMode]);
+    }, [isEditMode, setValue, serverHealthData]);
 
     const validateAllFields = (formData) => {
         const errors = {};
@@ -222,8 +332,110 @@ const AddHealthProfile = () => {
         console.log("폼 유효! 제출데이터", finalData);
 
         if (isEditMode) {
-            console.log("수정 모드 - 프로필 수정 로직 실행");
-            navigate('/profile/edit-complete');
+            // 편집 모드일 때는 프로필과 건강정보를 함께 업데이트
+            try {
+                // localStorage에서 프로필 데이터 가져오기
+                const editProfileData = JSON.parse(localStorage.getItem('editProfileData') || '{}');
+                
+                console.log('=== API 요청 데이터 확인 ===');
+                console.log('editProfileData (프로필):', editProfileData);
+                console.log('finalData (건강정보):', finalData);
+                
+                // currentUser가 null일 때 fallbackUser 사용
+                const userId = currentUser?.user_id || fallbackUser?.user_id || localStorage.getItem('user_id');
+                console.log('사용할 userId:', userId);
+                console.log('API URL:', `${process.env.REACT_APP_BACKEND_URL}/users/${userId}`);
+                console.log('전송할 JSON 데이터:', JSON.stringify({
+                    dogProfile: editProfileData,
+                    healthProfile: finalData
+                }));
+                
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        dogProfile: editProfileData,
+                        healthProfile: finalData
+                    })
+                });
+
+                console.log('API 응답 상태:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API 요청 실패:', errorText);
+                    throw new Error(`프로필 업데이트 실패: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('프로필 업데이트 성공:', result);
+                
+                // Redux 상태 업데이트 - 서버에서 최신 데이터 가져오기
+                try {
+                    const userResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${userId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (userResponse.ok) {
+                        const userData = await userResponse.json();
+                        if (userData.success && userData.user) {
+                            console.log('프로필 업데이트 후 최신 사용자 데이터:', userData.user);
+                            dispatch(setUser(userData.user));
+                        } else {
+                            // 서버에서 데이터를 가져올 수 없으면 기존 방식 사용
+                            const updatedUser = {
+                                ...currentUser,
+                                dogProfile: editProfileData,
+                                healthProfile: finalData
+                            };
+                            dispatch(setUser(updatedUser));
+                        }
+                    } else {
+                        // API 호출 실패 시 기존 방식 사용
+                        const updatedUser = {
+                            ...currentUser,
+                            dogProfile: editProfileData,
+                            healthProfile: finalData
+                        };
+                        dispatch(setUser(updatedUser));
+                    }
+                } catch (error) {
+                    console.error('최신 사용자 데이터 조회 오류:', error);
+                    // 오류 발생 시 기존 방식 사용
+                    const updatedUser = {
+                        ...currentUser,
+                        dogProfile: editProfileData,
+                        healthProfile: finalData
+                    };
+                    dispatch(setUser(updatedUser));
+                }
+                
+                // localStorage 업데이트 (새로고침 시 동기화를 위해)
+                if (editProfileData.name) {
+                    localStorage.setItem('userName', editProfileData.name);
+                }
+                if (editProfileData.profileImage) {
+                    localStorage.setItem('profileImage', editProfileData.profileImage);
+                }
+                // user_id도 localStorage에 저장 (AuthProvider에서 사용)
+                if (userId) {
+                    localStorage.setItem('user_id', userId);
+                }
+                
+                // localStorage 정리
+                localStorage.removeItem('editProfileData');
+                
+                alert('프로필이 성공적으로 업데이트되었습니다!');
+                navigate('/my-page');
+            } catch (error) {
+                console.error('프로필 업데이트 오류:', error);
+                alert('프로필 업데이트에 실패했습니다: ' + error.message);
+            }
         } else {
             // 신규 등록 모드일 때 처리 - 최종 회원가입 완료 API 호출
             try {
@@ -496,7 +708,9 @@ const AddHealthProfile = () => {
                 <S.TitleWrap> 
                     <Text.Body1>
                         <span style={{ color: '#CE5347', fontWeight: 'bold'}}>*&nbsp;</span>
-                        <S.highlight style={{ fontWeight: 'bold'}}>예방접종이력</S.highlight>
+                        <S.highlight style={{ fontWeight: 'bold'}}>
+                            {isEditMode ? '건강정보 편집' : '예방접종이력'}
+                        </S.highlight>
                         <span style={{ color: '#CE5347', fontSize:'16px' ,fontWeight: 'bold', marginLeft:'10px'}}>(다중선택가능)</span>
                     </Text.Body1>
                 </S.TitleWrap>
@@ -652,14 +866,32 @@ const AddHealthProfile = () => {
                 </S.inputinlinehealth>
             
                 <S.InputReguler style={{marginTop:"182px"}}>
-                    <BasicButton 
-                    basicButton="superSmall" 
-                    variant="filled" 
-                    style={{width:"200px", cursor:'pointer'}}
-                    onClick={handleFormSubmit}
-                    disabled={isSubmitting}>
-                        다음
-                    </BasicButton>
+                    {isEditMode ? (
+                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                            <BasicButton 
+                                basicButton="superSmall" 
+                                variant="default" 
+                                onClick={() => navigate('/profile/add?mode=edit')}
+                            >
+                                이전
+                            </BasicButton>
+                            <BasicButton 
+                                basicButton="superSmall" 
+                                variant="filled" 
+                                onClick={handleFormSubmit}
+                                disabled={isSubmitting}>
+                                저장하기
+                            </BasicButton>
+                        </div>
+                    ) : (
+                        <BasicButton 
+                            basicButton="superSmall" 
+                            variant="filled" 
+                            onClick={handleFormSubmit}
+                            disabled={isSubmitting}>
+                            다음
+                        </BasicButton>
+                    )}
                 </S.InputReguler>
             </S.InputWrapper>
         </div>

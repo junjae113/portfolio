@@ -9,37 +9,38 @@ const S = {}
   width: 100%;
   height: 100%;
   min-width: 800px;
+  background-color: #fff5ec;
  `
 
  S.FirstWrapper = styled.div`
   ${flexRow}
-  width: 1440px;
-  height: 570px;
+  /* width: 1440px;
+  height: 570px; */
   margin-top: 103px;
   gap: 75px;
  `
 
  S.SecondWrapper = styled.div`
   ${flexRow}
-  width: 1440px;
-  height: 1302px;
+  width: 1000px;
+  /* height: 1302px; */
   margin-top: 75px;
   margin-bottom: 174px;
-  gap: 91px;
+   align-items: flex-start;
  `
 
- S.Profile = styled.div`
-  width: 480px;
-  height: 570px;
-  border-radius: 24px;
-  box-shadow: 9px 9px 24px rgba(0, 0, 0, 0.2);
- `
+//  S.Profile = styled.div`
+//   /* width: 480px; */
+//   /* height: 570px; */
+//   border-radius: 24px;
+//   box-shadow: 9px 9px 24px rgba(0, 0, 0, 0.2);
+//  `
 
  S.Friends = styled.div`
   display: flex;
   justify-content: center;
   width: 885px;
-  height: 570px;
+  /* height: 570px; */
   border-radius: 24px;
   box-shadow: 9px 9px 24px rgba(0, 0, 0, 0.2);
   padding: 0 30px;
@@ -48,36 +49,35 @@ const S = {}
  S.CalendarWrapper = styled.div`
   ${flexColumn}
   width: 664px;
-  height: 1302px;
+  /* height: 1302px; */
   gap: 28px;
  `
+ // 미니캘린더
  S.Calendar = styled.div`
-  width: 664px;
-  height: 474px;
+  width: 400px;
+  height: 400px;
   border-radius: 24px;
   box-shadow: 9px 9px 24px rgba(0, 0, 0, 0.2);
  `
-
+// 다가오는 일정
  S.Plan = styled.div`
-  width: 664px;
-  height: 386px;
+  width: 400px;
   border-radius: 24px;
   box-shadow: 9px 9px 24px rgba(0, 0, 0, 0.2);
 `
-
+// 완료된 일정
  S.Review = styled.div`
-  width: 664px;
-  height: 386px;
+  width: 400px;
   border-radius: 24px;
   box-shadow: 9px 9px 24px rgba(0, 0, 0, 0.2);
 `
-
+// 채팅방
  S.Chat = styled.div`
   width: 686px;
-  height: 1302px;
   border-radius: 24px;
   box-shadow: 9px 9px 24px rgba(0, 0, 0, 0.2);
   background-color: #DFE1E5;
+  /* pointer-events: none;  */
  `
 
 

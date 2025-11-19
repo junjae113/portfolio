@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import BasicButton from '../../components/button/BasicButton';
 import {
   faHeart, faSadTear, faHome, faDog, faUserSecret,
@@ -22,6 +23,10 @@ export default function DbtiResultPage() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  
+  // Redux에서 현재 사용자 정보 가져오기
+  const currentUser = useSelector(state => state.user.user);
 
   useEffect(() => {
     if (window.Kakao) return;
@@ -80,6 +85,49 @@ export default function DbtiResultPage() {
     catch { alert('복사 실패'); }
   };
 
+  // MBTI 결과를 데이터베이스에 저장하는 함수
+  const handleSaveMbtiResult = async () => {
+    // localStorage에서 직접 사용자 정보 가져오기
+    const userId = localStorage.getItem('user_id');
+
+    if (!userId) {
+      alert('사용자 정보가 없습니다.');
+      return;
+    }
+
+    console.log('저장할 사용자 ID:', userId);
+    console.log('저장할 DBTI 결과:', code);
+
+    setIsSaving(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/update-mbti`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId: userId,
+          dbtiResult: code
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'MBTI 결과 저장에 실패했습니다.');
+      }
+
+      const result = await response.json();
+      console.log('MBTI 결과 저장 성공:', result);
+      alert('MBTI 검사 결과가 저장되었습니다!');
+
+    } catch (error) {
+      console.error('MBTI 결과 저장 오류:', error);
+      alert('MBTI 결과 저장에 실패했습니다: ' + error.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <>
       <S.HeaderSpacer />
@@ -119,6 +167,14 @@ export default function DbtiResultPage() {
               </S.Share>
 
               <S.Nav>
+                <BasicButton 
+                  roundButton="small" 
+                  variant="filled" 
+                  onClick={handleSaveMbtiResult}
+                  disabled={isSaving}
+                >
+                  {isSaving ? '저장 중...' : '결과 저장하기'}
+                </BasicButton>
                 <BasicButton roundButton="small" variant="gray" onClick={() => navigate('/dbti-question')}>다시 풀기</BasicButton>
                 <BasicButton roundButton="small" variant="filled" onClick={() => navigate('/main')}>메인 페이지</BasicButton>
                 <BasicButton roundButton="small" variant="filled" onClick={() => navigate('/my-page')}>마이 페이지</BasicButton>

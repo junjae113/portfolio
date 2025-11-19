@@ -287,8 +287,42 @@ S.InquiryButtonWrapper = styled.div`
 S.ListWrapper = styled.div`
   width: 1440px;
   margin-bottom: 175px;
+<<<<<<< HEAD
+  border-top: 3px solid #CF4B05;
 `
 
+S.RadioInputWrapper = styled.div`
+ display: flex;
+ flex-direction: row;
+ align-items: center;
+ width: 1440px;
+ padding-top: 132px;
+ gap: 974px;
+`
+
+S.SerachInput = styled.div`
+ width: 340px;
+ height: 46px;
+ margin-right: auto;
+ flex: 0 0 auto;
+
+ input{
+  position: relative;
+  height: 46px;
+ }
+
+ button{
+  position: absolute;
+  border-radius: 8px;
+  right: 4px;
+ }
+`
+
+
+=======
+`
+
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
 // inquiry detail ========================================================================
 
 S.InquiryContentWrapper = styled.div`
@@ -298,7 +332,10 @@ S.InquiryContentWrapper = styled.div`
  height: fit-content;
  /* padding: 0 24px; */
  border-bottom: solid 2px #cccccc;
+<<<<<<< HEAD
+=======
  padding-bottom: 180px;
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
 `
 
 S.ProfileDateWrapper = styled.div`
@@ -319,8 +356,12 @@ S.AuthorProfileWrapper = styled.div`
 S.Profile = styled.img`
  width: 64px;
  height: 64px;
+<<<<<<< HEAD
+ border-radius: 50%;
+=======
  border-radius: 50px;
  object-fit: cover;
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
 `
 
 S.AuthorName = styled.p`
@@ -355,7 +396,10 @@ S.FileLinkWrapper = styled.div`
  align-items: end;
  width: 100%;
  height: 186px;
+<<<<<<< HEAD
+=======
  flex: 0 0 auto;
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
  padding: 0 24px 56px 0;
  font-size: ${({ theme }) => theme.FONT_SIZE.button2 };
 `
@@ -394,10 +438,15 @@ S.ReplyProfileWrapper = styled.div`
 S.ReplyContent = styled.div`
  width: 100%;
  height: fit-content;
+<<<<<<< HEAD
+ padding-left: 152px;
+ font-size: ${({ theme }) => theme.FONT_SIZE.body2 };
+=======
  padding-left: 56px;
  font-size: ${({ theme }) => theme.FONT_SIZE.body2 };
  border-bottom: solid 2px #cccccc;
  padding-bottom: 90px;
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
 `
 
 S.TextAreaWrapper = styled.div`
@@ -414,6 +463,8 @@ S.Replybutton = styled.button`
  background-color: white;
  top:120px;
  right: 14px;
+<<<<<<< HEAD
+=======
 
  img{
   opacity: 50%;
@@ -423,6 +474,7 @@ S.Replybutton = styled.button`
  };
 
 
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
 `
 
 S.ButtonToList = styled.div`

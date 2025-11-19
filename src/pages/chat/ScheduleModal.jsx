@@ -2,7 +2,7 @@ import { faArrowLeft, faCalendarDays, faClock, faLocationDot } from '@fortawesom
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-clock/dist/Clock.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -11,6 +11,10 @@ import 'react-time-picker/dist/TimePicker.css';
 import BasicButton from "../../components/button/BasicButton";
 import S from './style';
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
 const ScheduleModal = ({ 
   onClose,
   onAddSchedule = () => {},
@@ -25,30 +29,58 @@ const ScheduleModal = ({
   );
   const [startTime, setStartTime] = useState('');
   const [location, setLocation] = useState('');
-  const [selectedFriends, setSelectedFriends] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [selectedFriend, setSelectedFriend] = useState(null);
   const [title, setTitle] = useState('');
   const [error, setError] = useState('');
 
-  const friends = [
-    { id: 1, name: 'Soul', avatar: "/assets/img/chat/soul.png" },
-    { id: 2, name: 'Melody', avatar: "/assets/img/chat/melody.png" },
-    { id: 3, name: 'Coco', avatar: "/assets/img/chat/coco.png" },
-    { id: 4, name: 'Choco', avatar: "/assets/img/chat/choco.png" },
-    { id: 5, name: 'Jude', avatar: "/assets/img/chat/jude.png" },
-  ];
-
   const toggleFriend = (friend) => {
-    if (selectedFriends.find(f => f.id === friend.id)) {
-      setSelectedFriends(selectedFriends.filter(f => f.id !== friend.id));
+    if (selectedFriend && selectedFriend._id === friend._id) {
+      // 같은 친구 → 해제
+      setSelectedFriend(null);
     } else {
-      setSelectedFriends([...selectedFriends, friend]);
+      // 다른 친구 → 새로 선택
+      setSelectedFriend(friend);
     }
   };
+
+<<<<<<< HEAD
+  // 추가하기, 일정추가 버튼 클릭 시
+  const handleAdd = () => {
+    if (step === 1 && selectedDate) {
+      // 추가하기 버튼 클릭시
+=======
+
+// console.log("selectedFriend._id" ,selectedFriend._id);
+  // 친구 목록 불러오는 api
+  useEffect(() => {
+    const getChattingRoom = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/chatting/api/get-chattingRoom/${user_id}`
+        );
+        
+        if (!response.ok) {
+          throw new Error(`서버 응답 에러: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const friends = data.chats;
+        setFriends(friends);
+      } catch(err) {
+        console.error("일정 불러오기 실패:", err);
+      }
+    };
+    if(user_id){
+      getChattingRoom();
+    }
+  }, [user_id]);
 
   // 추가하기, 일정추가 버튼 클릭 시
   const handleAdd = async() => {
     if (step === 1 && selectedDate) {
       // 추가하기 버튼 클릭시 
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
       setStep(2);
     } else if (step === 2) {
       // 일정추가 버튼 클릭 시
@@ -61,6 +93,17 @@ const ScheduleModal = ({
     const onlyDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : "";
     const onlyTime = startTime ? format(startTime, "HH:mm") : null;
 
+<<<<<<< HEAD
+      const newSchedule = {
+        title: title,
+        date: selectedDate.toISOString().split('T')[0],
+        startTime: startTime,
+        location: location,
+        friends: selectedFriends,
+      };
+
+      onAddSchedule(newSchedule);
+=======
     await fetch(`http://localhost:8000/calendar/api/post-schedules`, {
       method : "POST",
       headers : {
@@ -68,7 +111,7 @@ const ScheduleModal = ({
       },
       body : JSON.stringify({
         user_id: user_id,
-        // chat_id: selectedFriends,
+        match_id: selectedFriend?.match_id ?? undefined,
         title : title,
         date: onlyDate,
         time: onlyTime,
@@ -87,6 +130,7 @@ const ScheduleModal = ({
       })
       .catch(console.error)
       onAddSchedule();
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
       onClose();
     }
   };
@@ -138,7 +182,7 @@ const ScheduleModal = ({
                   setTitle('');
                   setStartTime('');
                   setLocation('');
-                  setSelectedFriends([]);
+                  setSelectedFriend(null);
                   setError('');
                 }}
               />
@@ -168,6 +212,24 @@ const ScheduleModal = ({
                 </S.InputSpan>
               </S.InputGroup>
             </S.InputGroupContainer>
+<<<<<<< HEAD
+
+            <S.InputGroupContainer>
+              <FontAwesomeIcon icon={faClock} style={{ color: '#616161', marginRight: '15px', width: '24px', height: '24px' }} />
+              <S.InputGroup>
+                <TimePicker
+                  onChange={setStartTime}
+                  value={startTime}
+                  disableClock
+                  clearIcon={null}
+                  clockIcon={null}
+                  format="HH:mm"
+                />
+              </S.InputGroup>
+            </S.InputGroupContainer>
+
+            <S.InputGroupContainer>
+=======
 
             <S.InputGroupContainer>
               <FontAwesomeIcon icon={faClock} style={{ color: '#616161', marginRight: '15px', width: '24px', height: '24px' }} />
@@ -186,6 +248,7 @@ const ScheduleModal = ({
             </S.InputGroupContainer>
 
             <S.InputGroupContainer>
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
               <FontAwesomeIcon icon={faLocationDot} style={{ color: '#616161', marginRight: '15px', width: '24px', height: '24px' }} />
               <S.InputGroup>
                 <S.Input
@@ -200,10 +263,17 @@ const ScheduleModal = ({
             <S.FriendsSelect>
               {friends.map(friend => (
                 <S.FriendAvatar
+<<<<<<< HEAD
                   key={friend.id}
                   src={friend.avatar}
                   alt={friend.name}
                   className={selectedFriends.find(f => f.id === friend.id) ? 'selected' : ''}
+=======
+                  key={friend._id}
+                  src={friend.target_profile_img}
+                  alt={friend.target_name}
+                  className={selectedFriend?._id === friend._id ? 'selected' : ''}
+>>>>>>> 7ce7cfeeea3d97adf04799e68203868b9cb0b807
                   onClick={() => toggleFriend(friend)}
                 />
               ))}

@@ -27,6 +27,10 @@ const SignUpLayout = () => {
   const isSignUpFlow = location.pathname.startsWith("/sign-up") || 
                        location.pathname.startsWith("/profile");
 
+  // 편집 모드 확인 (URL 파라미터)
+  const urlParams = new URLSearchParams(location.search);
+  const isEditMode = urlParams.get('mode') === 'edit';
+
   // SignUp 플로우가 아니면 렌더링하지 않음
   if (!isSignUpFlow) {
     return <Outlet />;
@@ -36,7 +40,7 @@ const SignUpLayout = () => {
     <SignUpContainer>
       <ScrollToTop />
       {isFirstStep && <SocialTabWrapper />}
-      <ProgressStep steps={steps} activeStep={activeStep} />
+      {!isEditMode && <ProgressStep steps={steps} activeStep={activeStep} />}
       <Outlet />
     </SignUpContainer>
   );

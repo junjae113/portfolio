@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import BasicButton from '../../components/button/BasicButton';
 import S from './style';
@@ -13,12 +13,14 @@ import Checkbox from '../../components/checkbox/Checkbox';
 import DatePickerSingle from './DatePickerSingle';
 import dayjs from 'dayjs';
 import { useLocation } from 'react-router-dom';
+import { setUser } from '../../modules/user';
 
 const AddProfile = ({ onProfileComplete }) => {
     const calendarRef = useRef(null);
     const fileInputRef = useRef(null);
     const location = useLocation();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     
     // Redux에서 사용자 정보 가져오기
     const currentUser = useSelector(state => state.user.currentUser);
@@ -28,14 +30,66 @@ const AddProfile = ({ onProfileComplete }) => {
         mode: "onChange" 
     });
     
-    // 편집 모드 확인
-    const isEditMode = location.state?.mode === 'edit';
-    const userData = location.state?.userData || {};
+    // 편집 모드 확인 (URL 파라미터 또는 state)
+    const urlParams = new URLSearchParams(location.search);
+    const isEditMode = urlParams.get('mode') === 'edit' || location.state?.mode === 'edit';
+    // currentUser가 없을 때 localStorage에서 정보 가져오기
+    const fallbackUser = currentUser || {
+        user_id: localStorage.getItem('user_id'),
+        name: localStorage.getItem('userName'),
+        dogProfile: {
+            name: localStorage.getItem('userName'),
+            profileImage: localStorage.getItem('profileImage')
+        }
+    };
+    
+    // 서버에서 프로필 데이터 가져오기
+    const [serverProfileData, setServerProfileData] = useState(null);
+    
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            if (isEditMode && fallbackUser.user_id) {
+                try {
+                    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${fallbackUser.user_id}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success && data.user?.dogProfile) {
+                            console.log('서버에서 가져온 프로필 데이터:', data.user.dogProfile);
+                            setServerProfileData(data.user.dogProfile);
+                        }
+                    }
+                } catch (error) {
+                    console.error('프로필 데이터 조회 오류:', error);
+                }
+            }
+        };
+        
+        fetchProfileData();
+    }, [isEditMode, fallbackUser.user_id]);
+    
+    // localStorage의 userName을 최우선으로 사용하도록 userData 생성
+    const baseUserData = location.state?.userData || serverProfileData || fallbackUser?.dogProfile || {};
+    const userData = {
+        ...baseUserData,
+        name: localStorage.getItem('userName') || baseUserData.name || '방울이'
+    };
+    console.log('AddProfile - currentUser:', currentUser);
+    console.log('AddProfile - fallbackUser:', fallbackUser);
+    console.log('AddProfile - serverProfileData:', serverProfileData);
+    console.log('AddProfile - userData:', userData);
+    console.log('AddProfile - isEditMode:', isEditMode);
     
     // 선택 상태 관리
     const [selectedCharactor, setSelectedCharactor] = useState(1);
     const [selectedFavorite, setSelectedFavorite] = useState([1]);
-    const [selectedCautions, setSelectedCautions] = useState([1]); // 필수사항이므로 기본값 [1]
+    const [selectedCautions, setSelectedCautions] = useState([1]);
+    const [isInitialized, setIsInitialized] = useState(false); // 필수사항이므로 기본값 [1]
     const [selectedDate, setSelectedDate] = useState(null);
     const [imageSrc, setImageSrc] = useState('');
     const [selectedImageFile, setSelectedImageFile] = useState(null); // 이미지 파일 상태 추가
@@ -45,9 +99,87 @@ const AddProfile = ({ onProfileComplete }) => {
     const [validationErrors, setValidationErrors] = useState({});
     const [hasSubmitted, setHasSubmitted] = useState(false);
 
+    // 역변환 함수들 (텍스트를 ID로 변환)
+    const getCharactorId = (title) => {
+        if (title.includes("나는 개인싸")) return 1;
+        if (title.includes("나를 따르라")) return 2;
+        if (title.includes("나랑만 있어줘")) return 3;
+        if (title.includes("조금 조심스럽개")) return 4;
+        return 1; // 기본값
+    };
+
+    const getFavoriteId = (title) => {
+        if (title.includes("간식")) return 1;
+        if (title.includes("산책")) return 2;
+        if (title.includes("쉬기")) return 3;
+        if (title.includes("애카")) return 4;
+        return 1; // 기본값
+    };
+
+    const getCautionId = (title) => {
+        if (title.includes("만지는 거 싫어")) return 1;
+        if (title.includes("친구 무서워요")) return 2;
+        if (title.includes("알러지가 있어요")) return 3;
+        if (title.includes("소리에 놀라요")) return 4;
+        return 1; // 기본값
+    };
+
     // 초기값 설정
     useEffect(() => {
-        if (!isEditMode) {
+        if (isEditMode && userData && !isInitialized) {
+            // 편집 모드일 때 기존 데이터로 초기화
+            console.log('편집 모드 - 기존 데이터:', userData);
+            
+            // 기본 정보
+            setValue("name", userData.name || '');
+            setValue("breed", userData.breed || '');
+            setValue("custombreed", userData.custombreed || '');
+            setValue("weight", userData.weight || '');
+            setValue("gender", userData.gender || 'male');
+            setValue("neutralization", userData.neutralization || 'yes');
+            setValue("address", userData.address || '');
+            
+            // 추가 정보
+            setValue("nickname", userData.nickname || '');
+            setValue("favoriteSnack", userData.favoriteSnack || '');
+            setValue("walkingCourse", userData.walkingCourse || '');
+            setValue("messageToFriend", userData.messageToFriend || '');
+            
+            // 성격 및 선택사항
+            setValue("charactor", userData.charactor || '');
+            setValue("favorites", userData.favorites || []);
+            setValue("cautions", userData.cautions || []);
+            
+            // 생년월일
+            if (userData.birthDate) {
+                setSelectedDate(dayjs(userData.birthDate));
+                setValue("birthDate", userData.birthDate);
+            }
+            
+            // 프로필 이미지
+            if (userData.profileImage) {
+                setImageSrc(userData.profileImage);
+            }
+            
+            // 상태 동기화 - 기존 데이터에 맞게 변환
+            if (userData.charactor) {
+                // 성격 텍스트를 ID로 변환
+                const charactorId = getCharactorId(userData.charactor);
+                setSelectedCharactor(charactorId);
+            }
+            
+            if (userData.favorites && userData.favorites.length > 0) {
+                // 좋아하는 것 텍스트를 ID로 변환
+                const favoriteIds = userData.favorites.map(fav => getFavoriteId(fav)).filter(id => id);
+                setSelectedFavorite(favoriteIds);
+            }
+            
+            if (userData.cautions && userData.cautions.length > 0) {
+                // 주의사항 텍스트를 ID로 변환
+                const cautionIds = userData.cautions.map(caution => getCautionId(caution)).filter(id => id);
+                setSelectedCautions(cautionIds);
+            }
+        } else if (!isEditMode) {
             // 신규 등록 시 기본값 설정
             setValue("charactor", 1);
             setValue("favorites", [1]);
@@ -75,8 +207,11 @@ const AddProfile = ({ onProfileComplete }) => {
             // 상태 동기화
             setSelectedFavorite([1]);
             setSelectedCautions([1]);
+            
+            // 초기화 완료 표시
+            setIsInitialized(true);
         }
-    }, [isEditMode, setValue, currentUser]);
+    }, [isEditMode, setValue, currentUser, serverProfileData]);
 
     // 품종 옵션
     const BREEDS = [
@@ -147,16 +282,23 @@ const AddProfile = ({ onProfileComplete }) => {
 
     // 성격 선택
     const selectCharactor = (id) => {
+        console.log('🔥 성격 선택 함수 호출됨:', id);
+        console.log('🔥 현재 selectedCharactor:', selectedCharactor);
         setSelectedCharactor(id);
         setValue("charactor", id, { shouldValidate: true });
+        console.log('🔥 성격 선택 후 selectedCharactor:', id);
+        console.log('🔥 setValue 호출 완료');
     };
 
     // 좋아하는 것 선택 (다중선택)
     const selectFavorite = (id) => {
+        console.log('🔥 좋아하는 것 선택 함수 호출됨:', id);
+        console.log('🔥 현재 selectedFavorite:', selectedFavorite);
         setSelectedFavorite((prev) => {
             const updated = prev.includes(id) 
                 ? prev.filter((v) => v !== id) 
                 : [...prev, id];
+            console.log('🔥 좋아하는 것 선택 후 updated:', updated);
             setValue("favorites", updated, { shouldValidate: true });
             return updated;
         });
@@ -312,6 +454,7 @@ const AddProfile = ({ onProfileComplete }) => {
                 default: return "";
             }
         };
+
         
         // 기본값 설정 및 타이틀로 변환
         const profileData = {
@@ -343,7 +486,19 @@ const AddProfile = ({ onProfileComplete }) => {
             console.log('FormData로 전송:', formData);
         }
         
-        if (onProfileComplete) {
+        if (isEditMode) {
+            // 편집 모드일 때는 프로필 데이터를 localStorage에 저장하고 건강정보 페이지로 이동
+            console.log('=== 편집 모드 - localStorage에 저장할 데이터 ===');
+            console.log('selectedCharactor (원본):', selectedCharactor);
+            console.log('profileData.charactor (변환됨):', profileData.charactor);
+            console.log('selectedFavorite (원본):', selectedFavorite);
+            console.log('profileData.favorites (변환됨):', profileData.favorites);
+            console.log('selectedCautions (원본):', selectedCautions);
+            console.log('profileData.cautions (변환됨):', profileData.cautions);
+            console.log('전체 profileData:', profileData);
+            localStorage.setItem('editProfileData', JSON.stringify(profileData));
+            navigate('/profile/add-health?mode=edit');
+        } else if (onProfileComplete) {
             onProfileComplete(profileData);
         }
     };
@@ -364,7 +519,9 @@ const AddProfile = ({ onProfileComplete }) => {
             <S.TitleWrap> 
                 <div style={{ fontSize: '18px', lineHeight: '1.5' }}>
                     <span style={{ color: '#CE5347', fontWeight: 'bold'}}>*&nbsp;</span>
-                    <S.highlight style={{ fontWeight: 'bold', fontSize: '30px'}}>기본정보</S.highlight>
+                    <S.highlight style={{ fontWeight: 'bold', fontSize: '30px'}}>
+                        {isEditMode ? '프로필 편집' : '기본정보'}
+                    </S.highlight>
                 </div>
             </S.TitleWrap>
             
@@ -516,6 +673,7 @@ const AddProfile = ({ onProfileComplete }) => {
                     <SelectBox
                         options={BREEDS}
                         placeholder="강아지 품종을 선택하세요."
+                        defaultValue={userData.breed || ''}
                         {...register("breed", {required: true})}
                         onSelect={(v) => setValue("breed", v)}
                         style={{width:"100%", cursor:"pointer"}}

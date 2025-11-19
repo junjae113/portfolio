@@ -13,9 +13,9 @@ export const results = {
     ],
     features: [
       { icon: "heart",       label: "애착력 200%" },
-      { icon: "sad-tear",    label: "낯가림 심함" },
-      { icon: "home",        label: "집콕력 만렙" },
-      { icon: "dog",         label: "겁이 많음" }
+      { icon: "doghouse",    label: "낯가림 심함" },
+      { icon: "latvia",        label: "집콕력 만렙" },
+      { icon: "nervous",         label: "겁이 많음" }
     ]
   },
   WTIA: {
@@ -29,10 +29,10 @@ export const results = {
       "#편한_사람_곁에서만_진짜_모습을_보여줘"
     ],
     features: [
-      { icon: "user-secret", label: "은밀한 관찰력" },
-      { icon: "face-meh",    label: "신중함 MAX" },
-      { icon: "eye",         label: "눈치백단" },
-      { icon: "dog",         label: "낯가림 전문가" }
+      { icon: "observation", label: "은밀한 관찰력" },
+      { icon: "thinking",    label: "신중함 MAX" },
+      { icon: "eyes",         label: "눈치백단" },
+      { icon: "nervous",         label: "낯가림 전문가" }
     ]
   },
   WNIA: {
@@ -46,9 +46,9 @@ export const results = {
       "#편한_척_말고_진짜_편한_사람이면_돼"
     ],
     features: [
-      { icon: "people-arrows", label: "거리두기 필수" },
-      { icon: "dog",            label: "자유로운 영혼" },
-      { icon: "paw",            label: "다가오면 뒷걸음" },
+      { icon: "social-distancing", label: "거리두기 필수" },
+      { icon: "freedom",            label: "자유로운 영혼" },
+      { icon: "pawprints",         label: "다가오면 뒷걸음" },
       { icon: "dog",            label: "혼자놀기 고수" }
     ]
   },
@@ -63,10 +63,10 @@ export const results = {
       "#익숙한_환경에서만_편안함을_느껴"
     ],
     features: [
-      { icon: "microchip",           label: "경계센서 ON" },
-      { icon: "umbrella",            label: "배려심 가득" },
-      { icon: "sad-tear",            label: "쫄보킹" },
-      { icon: "hands-holding-heart", label: "상처주지 않는 따뜻함" }
+      { icon: "sensor",          label: "경계센서 ON" },
+      { icon: "caring",          label: "배려심 가득" },
+      { icon: "king",            label: "쫄보킹" },
+      { icon: "heart",           label: "상처주지 않는 따뜻함" }
     ]
   },
   WTEL: {
@@ -80,10 +80,10 @@ export const results = {
       "#익숙해지면_금세_친해지는_스타일"
     ],
     features: [
-      { icon: "eye",            label: "눈치보기" },
-      { icon: "dog",            label: "믿음가면 꼬리붕붕" },
-      { icon: "heartbeat",      label: "쿵쿵확인" },
-      { icon: "face-sad-tear",  label: "낯가림 주의" }
+      { icon: "eyes",       label: "눈치보기" },
+      { icon: "dogtail",   label: "믿음가면 꼬리붕붕" },
+      { icon: "dog",      label: "킁킁 확인" },
+      { icon: "nervous",    label: "낯가림 주의" }
     ]
   },
   WTEA: {
@@ -97,9 +97,9 @@ export const results = {
       "#익숙한_사람에게만_허세를_부려"
     ],
     features: [
-      { icon: "map-marker-alt", label: "여기가 내 구역" },
-      { icon: "brain",          label: "호기심 대장" },
-      { icon: "dog",            label: "먼저 짖기" },
+      { icon: "doghouse",       label: "여기가 내 구역" },
+      { icon: "thinking",       label: "호기심 대장" },
+      { icon: "bark",           label: "먼저 짖기" },
       { icon: "running",        label: "관찰보단 행동" }
     ]
   },
@@ -114,10 +114,10 @@ export const results = {
       "#친근하게_다가가는_데는_망설임이_없어"
     ],
     features: [
-      { icon: "dog",          label: "인싸견" },
-      { icon: "laugh-beam",   label: "웃음 유발자" },
-      { icon: "running",      label: "산책길 스타" },
-      { icon: "face-angry",   label: "말안듣음 주의" }
+      { icon: "cool",         label: "인싸견" },
+      { icon: "laughing",     label: "웃음 유발자" },
+      { icon: "pawprints",      label: "산책길 스타" },
+      { icon: "bark",         label: "말안듣음 주의" }
     ]
   },
   CTEL: {
@@ -127,10 +127,10 @@ export const results = {
     image: "/assets/img/dbti/CTEL.png",
     hashtags: ["#혼자 싫어", "#사랑둥이", "#충성심 MAX", "#질투 많음"],
     features: [
-      { icon: "dog",           label: "혼자 싫어" },
+      { icon: "nervous",       label: "혼자 싫어" },
       { icon: "heart",         label: "사랑둥이" },
-      { icon: "hands-helping", label: "충성심 MAX" },
-      { icon: "face-angry",    label: "질투 많음" }
+      { icon: "latvia",        label: "충성심 만렙" },
+      { icon: "jealous",    label: "질투 많음" }
     ]
   },
   CTEA: {
@@ -144,10 +144,10 @@ export const results = {
       "#에너지 넘치고 활발한 성격"
     ],
     features: [
-      { icon: "bullhorn",      label: "관종" },
-      { icon: "hands-helping", label: "돋기 들쑤시기" },
-      { icon: "signal-stream", label: "텐션 100랩" },
-      { icon: "grin-hearts",   label: "애교쟁이" }
+      { icon: "cool",      label: "관종" },
+      { icon: "nervous", label: "들쑤시기" },
+      { icon: "latvia", label: "텐션 100랩" },
+      { icon: "heart",   label: "애교쟁이" }
     ]
   },
   CNEA: {
@@ -161,10 +161,10 @@ export const results = {
       "#낯선 사람과도 빠르게 친해져"
     ],
     features: [
-      { icon: "grin-beam",     label: "웃음 전도견" },
-      { icon: "eye",           label: "눈치없음" },
-      { icon: "signal-stream", label: "에너지 만렙" },
-      { icon: "dog",           label: "인싸견" }
+      { icon: "laughing",     label: "웃음 전도견" },
+      { icon: "eyes",           label: "눈치없음" },
+      { icon: "latvia",       label: "에너지 만렙" },
+      { icon: "cool",           label: "인싸견" }
     ]
   },
   CNEL: {
@@ -178,10 +178,10 @@ export const results = {
       "#새로운 환경에선 살짝 긴장해"
     ],
     features: [
-      { icon: "grin-hearts",   label: "애교쟁이" },
-      { icon: "umbrella-beach",label: "보호 본능 유발" },
-      { icon: "people-arrows", label: "영역 침범 X" },
-      { icon: "face-angry",    label: "사고뭉치" }
+      { icon: "heart",        label: "애교쟁이" },
+      { icon: "caring",       label: "보호 본능 유발" },
+      { icon: "doghouse",     label: "영역 침범 X" },
+      { icon: "nervous",   label: "사고뭉치" }
     ]
   },
   CTIA: {
@@ -196,9 +196,9 @@ export const results = {
     ],
     features: [
       { icon: "utensils",      label: "먹보" },
-      { icon: "dog",           label: "혼자 싫어" },
-      { icon: "running",       label: "훈련왕" },
-      { icon: "signal-stream", label: "집중력 100랩" }
+      { icon: "nervous",           label: "혼자 싫어" },
+      { icon: "king",       label: "훈련왕" },
+      { icon: "latvia", label: "집중력 100랩" }
     ]
   },
   CTIL: {
@@ -212,10 +212,10 @@ export const results = {
       "#편한 상대에게만 깊게 마음을 줘"
     ],
     features: [
-      { icon: "running",       label: "훈련왕" },
-      { icon: "crown",         label: "고집왕" },
-      { icon: "meh",           label: "표현 제로" },
-      { icon: "signal-stream", label: "지능 100랩" }
+      { icon: "king",       label: "훈련왕" },
+      { icon: "king",         label: "고집왕" },
+      { icon: "nervous",           label: "표현 제로" },
+      { icon: "latvia", label: "지능 100랩" }
     ]
   },
   CNIA: {
@@ -229,10 +229,10 @@ export const results = {
       "#익숙한 장소에서만 편안함을 느껴"
     ],
     features: [
-      { icon: "dog",           label: "혼자 놀기 마스터" },
-      { icon: "hands-helping", label: "주인만 좋아" },
-      { icon: "crown",         label: "고집왕" },
-      { icon: "eye",           label: "관찰력 MAX" }
+      { icon: "latvia",           label: "혼자 놀기 마스터" },
+      { icon: "heart", label: "주인만 좋아" },
+      { icon: "king",         label: "고집왕" },
+      { icon: "observation",           label: "관찰력 MAX" }
     ]
   },
   CNIL: {
@@ -246,10 +246,10 @@ export const results = {
       "#솔직한 감정표현은 서툰 편이야"
     ],
     features: [
-      { icon: "face-angry",      label: "질투 많음" },
-      { icon: "dog",             label: "혼자 잘 놈" },
-      { icon: "crown",           label: "고집왕" },
-      { icon: "toggle-on",       label: "감정 들쑥날쑥" }
+      { icon: "jealous",      label: "질투 많음" },
+      { icon: "cool",             label: "혼자 잘 놈" },
+      { icon: "king",           label: "고집왕" },
+      { icon: "nervous",       label: "감정 들쑥날쑥" }
     ]
   }
 };

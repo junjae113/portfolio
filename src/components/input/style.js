@@ -92,8 +92,7 @@ S.InputButtonWrapper = styled.div`
   button {
     position: absolute;
     right: 24px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 18px;
     cursor: pointer;
   }
 
